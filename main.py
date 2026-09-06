@@ -6,11 +6,20 @@ from datetime import datetime
 from database import engine, Base, get_db
 from models import TransactionModel
 from schemas import TransactionCreate, TransactionResponse
+from fastapi.responses import RedirectResponse
+
+
 
 Base.metadata.create_all(bind=engine)
 
+
+
 app = FastAPI(title="Personal Budget & Expense Management System")
 
+
+@app.get("/", include_in_schema=False)
+def root():
+    return RedirectResponse(url="/docs")
 
 @app.post("/transactions/", response_model=TransactionResponse, status_code=status.HTTP_201_CREATED)
 def create_transaction(transaction: TransactionCreate, db: Session = Depends(get_db)):
